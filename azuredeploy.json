@@ -285,9 +285,10 @@
         },
         "mysqlVersion": {
             "allowedValues": [
-                "8.0.21"
+                "8.0.21",
+                "8.0"
             ],
-            "defaultValue": "8.0.21",
+            "defaultValue": "8.0",
             "metadata": {
                 "description": "Mysql version"
             },
