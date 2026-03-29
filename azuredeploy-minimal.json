@@ -40,7 +40,8 @@
                     "dbServerType":                 { "value": "mysqlflex" },
                     "vnetDbDeploySwitch":           {"value": true },
                     "fileServerDiskCount":          { "value": 2 },
-                    "fileServerDiskSize":           { "value": 32 }
+                    "fileServerDiskSize":           { "value": 32 },
+                    "installO365pluginsSwitch":     { "value": true }
                 },
                 "templateLink": {
                     "uri": "[concat(parameters('_artifactsLocation'), 'azuredeploy.json', parameters('_artifactsLocationSasToken'))]"
