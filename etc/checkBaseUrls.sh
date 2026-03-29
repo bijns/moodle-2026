@@ -5,10 +5,10 @@
 CURRENT_BRANCH=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
 echo "Current git branch is '$CURRENT_BRANCH'"
 
-BASE_TEMPLATE_URL=https://raw.githubusercontent.com/Azure/Moodle/$CURRENT_BRANCH/nested/
+BASE_TEMPLATE_URL=https://raw.githubusercontent.com/bijns/moodle-2026/$CURRENT_BRANCH/nested/
 echo "Base template URL: $BASE_TEMPLATE_URL"
 
-SCRIPT_LOCATION=https://raw.githubusercontent.com/Azure/Moodle/$CURRENT_BRANCH/scripts/
+SCRIPT_LOCATION=https://raw.githubusercontent.com/bijns/moodle-2026/$CURRENT_BRANCH/scripts/
 echo "Script location: $SCRIPT_LOCATION"
 
 DEPLOY_TO_AZURE_URL=https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2FMoodle%2F$CURRENT_BRANCH%2Fazuredeploy.json

@@ -31,7 +31,7 @@ Type: string
 
 Possible Values: null
 
-Default: https://raw.githubusercontent.com/Azure/Moodle/master/
+Default: https://raw.githubusercontent.com/bijns/moodle-2026/claude/update-public-ip-sku-nU8VR/
 
 
 ### _artifactsLocationSasToken
