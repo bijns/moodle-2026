@@ -58,13 +58,13 @@
             "mode": "[parameters('moodleCommon').mysqlflexHaEnabled]",
             "standbyAvailabilityZone": "[parameters('moodleCommon').mysqlflexStandbyAvailabilityZone]"
           },
-          "Storage": {
+          "storage": {
             "storageSizeGB": "[parameters('moodleCommon').mysqlflexStgSizeGiB]",
             "iops": "[parameters('moodleCommon').mysqlflexStgIops]",
-            "autogrow": "[parameters('moodleCommon').mysqlflexStgAutogrow]"
+            "autoGrow": "[parameters('moodleCommon').mysqlflexStgAutogrow]"
           },
           "network": "[if(parameters('moodleCommon').vnetDbDeploySwitch, variables('vnetNetworkData'), createObject())]",
-          "Backup": {
+          "backup": {
             "backupRetentionDays": 35,
             "geoRedundantBackup": "Disabled"
           }
