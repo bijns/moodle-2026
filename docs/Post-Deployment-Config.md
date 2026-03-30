@@ -272,6 +272,158 @@ https://lms.yourdomain.com/login/index.php?nooidc=1
 4. Upload your `.zip` file directly (do not extract it)
 5. Click **Save and return to course**
 
+### Articulate Rise export settings
+
+When publishing from Articulate Rise, configure these settings for proper completion tracking:
+
+1. **LMS Format:** SCORM 1.2
+2. **Tracking:** Track using quiz result → select your quiz
+3. **Reporting:** Passed/Incomplete
+4. **Exit Course Link:** On (ensures the SCORM package commits the final status)
+
+Without these settings, the SCORM package will report `browsed` instead of `passed`, and Moodle won't mark the activity as complete.
+
+### Enable activity completion tracking
+
+1. Edit the SCORM activity → **Activity completion**
+2. Set **Completion tracking** to **Show activity as complete when conditions are met**
+3. Check **Require status** → select **Completed** and/or **Passed**
+4. Click **Save**
+
+### Reset a user's SCORM attempt
+
+To reset a user's attempt for retesting:
+
+1. Go to your course → **Grades** tab
+2. Find the SCORM activity → click **...** (three dots) next to the user's score
+3. Click **Grade analysis**
+4. Select the attempt(s) → click **Delete selected attempts**
+
+This clears the user's SCORM data and completion status so they can retake the activity.
+
+## 6. Real-Time Webhook for Course Completion (Power Automate)
+
+To trigger a Power Automate flow in real time when a user completes a SCORM activity, create a custom Moodle event observer plugin.
+
+### Create the plugin
+
+On the controller VM, run:
+
+```bash
+sudo mkdir -p /moodle/html/moodle/local/webhooknotify/classes
+sudo mkdir -p /moodle/html/moodle/local/webhooknotify/db
+```
+
+Create the version file:
+
+```bash
+sudo tee /moodle/html/moodle/local/webhooknotify/version.php << 'EOF'
+<?php
+defined('MOODLE_INTERNAL') || die();
+$plugin->component = 'local_webhooknotify';
+$plugin->version = 2026032901;
+$plugin->requires = 2024042200;
+EOF
+```
+
+Create the event observer config:
+
+```bash
+sudo tee /moodle/html/moodle/local/webhooknotify/db/events.php << 'EOF'
+<?php
+defined('MOODLE_INTERNAL') || die();
+$observers = [
+    [
+        'eventname' => '\core\event\course_module_completion_updated',
+        'callback'  => 'local_webhooknotify_observer::completion_updated',
+    ],
+];
+EOF
+```
+
+Create the observer class:
+
+```bash
+sudo tee /moodle/html/moodle/local/webhooknotify/classes/observer.php << 'EOF'
+<?php
+defined('MOODLE_INTERNAL') || die();
+
+class local_webhooknotify_observer {
+    public static function completion_updated(\core\event\course_module_completion_updated $event) {
+        $data = $event->get_data();
+        $url = 'YOUR_POWER_AUTOMATE_HTTP_TRIGGER_URL';
+
+        $payload = json_encode([
+            'userid' => $data['relateduserid'],
+            'courseid' => $data['courseid'],
+            'cmid' => $data['contextinstanceid'],
+            'timecreated' => $data['timecreated'],
+        ]);
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_exec($ch);
+        curl_close($ch);
+    }
+}
+EOF
+```
+
+Set permissions:
+
+```bash
+sudo chown -R www-data:www-data /moodle/html/moodle/local/webhooknotify
+```
+
+### Install the plugin
+
+Go to **Site administration** → **Notifications** and click **Upgrade Moodle database now**.
+
+### Configure the webhook URL
+
+1. Create a Power Automate flow with trigger **"When an HTTP request is received"**
+2. Copy the generated URL
+3. Update the observer:
+
+```bash
+sudo sed -i "s|YOUR_POWER_AUTOMATE_HTTP_TRIGGER_URL|https://prod-XX.westeurope.logic.azure.com/workflows/...|" /moodle/html/moodle/local/webhooknotify/classes/observer.php
+```
+
+When a user completes a SCORM activity, Moodle will POST the following JSON to your Power Automate flow:
+
+```json
+{
+  "userid": 4,
+  "courseid": 2,
+  "cmid": 2,
+  "timecreated": 1774886000
+}
+```
+
+### Useful REST API endpoints
+
+Get enrolled users (to find user IDs):
+
+```
+https://lms.yourdomain.com/webservice/rest/server.php?wstoken=TOKEN&wsfunction=core_enrol_get_enrolled_users&courseid=2&moodlewsrestformat=json
+```
+
+Get completion status for a user:
+
+```
+https://lms.yourdomain.com/webservice/rest/server.php?wstoken=TOKEN&wsfunction=core_completion_get_activities_completion_status&courseid=2&userid=USER_ID&moodlewsrestformat=json
+```
+
+Get SCORM score for a user (custom endpoint):
+
+```
+https://lms.yourdomain.com/local/score.php?token=TOKEN&userid=USER_ID&scormid=1
+```
+
 ## Next Steps
 
 - [Managing your Moodle cluster](./Manage.md)
