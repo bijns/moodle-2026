@@ -103,6 +103,12 @@ sudo sed -n '10p' /tmp/vars.txt
 4. On the next page (step 2/2), set:
    - **Microsoft Entra tenant:** (Tenant ID from the app registration)
 5. Save changes
+6. Go to **Site administration** -> **Plugins** -> **Authentication** -> **OpenID Connect** -> **Field mappings**
+7. Under **Data mapping**, set:
+   - **First name:** Given Name -> **Locked**
+   - **Last name:** Surname -> **Locked**
+   - **Email address:** Email -> **Locked**
+8. Save changes
 
 ### Enable the auth plugin
 
