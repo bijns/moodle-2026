@@ -223,13 +223,7 @@ Per course:
 ### Disable manual login (after SSO is confirmed working)
 
 1. **Site administration** -> **Plugins** -> **Authentication** -> **Manage authentication**
-2. Disable **Manual accounts** (click the eye icon)
-
-**Important:** You can always bypass OIDC and access the manual login form at:
-
-```
-https://lms.yourdomain.com/login/index.php?nooidc=1
-```
+2. Uncheck **Display manual login form** -> Save changes
 
 ## 5. Uploading SCORM Content
 
