@@ -217,9 +217,8 @@ Per course:
 
 ### Assign admin roles
 
-1. **Site administration** -> **Users** -> **Assign system roles**
-2. Click **Manager** (or **Site administrator** for full access)
-3. Search for the user, select, and click **Add**
+1. **Site administration** -> **Users** -> **Permissions** -> **Site administrators**
+2. Search for the user and add them
 
 ### Disable manual login (after SSO is confirmed working)
 
