@@ -193,10 +193,17 @@ Per course:
 1. **Site administration** -> **Mobile app** -> **Mobile settings**
 2. Set **Enable web services for mobile devices** to **No**
 
-### Disable blogs
+### Disable unused features
 
 1. **Site administration** -> **Advanced features**
-2. Uncheck **Enable blogs**
+2. Uncheck:
+   - **Enable blogs**
+   - **Enable comments**
+   - **Enable tags functionality**
+   - **Enable notes**
+   - **Enable competencies**
+   - **Enable messaging system**
+3. Save changes
 
 ### Disable learning plans
 
