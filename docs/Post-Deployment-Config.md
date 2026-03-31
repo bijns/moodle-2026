@@ -35,26 +35,6 @@ Use HTTP validation (the deployment templates configure nginx to serve ACME chal
 sudo certbot certonly --webroot -w /moodle/html/moodle -d lms.yourdomain.com
 ```
 
-If HTTP validation fails (e.g. on older deployments), use DNS validation as a fallback:
-
-```bash
-sudo certbot certonly --manual --preferred-challenges dns -d lms.yourdomain.com
-```
-
-Certbot will ask you to create a TXT record:
-
-```
-_acme-challenge.lms.yourdomain.com  TXT  <challenge-value>
-```
-
-Add that record at your DNS provider, verify with:
-
-```bash
-nslookup -type=TXT _acme-challenge.lms.yourdomain.com
-```
-
-Once the record resolves, press Enter in certbot to continue.
-
 ### Copy certificate files
 
 ```bash
