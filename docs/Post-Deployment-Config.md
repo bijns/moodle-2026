@@ -162,7 +162,11 @@ Sync can take up to 24 hours. After that, your Moodle courses will appear in Viv
 ### Set default language
 
 1. **Site administration** -> **Language** -> **Language packs** -> install **Nederlands - Werkplek (nl_wp)**
-2. **Site administration** -> **Language** -> **Language settings** -> set **Default language** to **Nederlands - Werkplek**
+2. **Site administration** -> **Language** -> **Language settings**:
+   - Set **Default language** to **Nederlands - Werkplek**
+   - Uncheck **Language autodetect**
+   - Uncheck **On account creation set user's browser language as their preferred language**
+3. Save changes
 
 ### Set default timezone
 
@@ -170,11 +174,11 @@ Sync can take up to 24 hours. After that, your Moodle courses will appear in Viv
 2. Set **Default timezone** (e.g. `Europe/Amsterdam`)
 3. Optionally set **Force default timezone** to the same value
 
-### Disable guest access
+### Disable guest access and self-registration
 
 1. **Site administration** -> **Plugins** -> **Authentication** -> **Manage authentication**
-2. Disable **Guest login button** (click the eye icon)
-3. Per course: **Participants** -> **Enrolment methods** -> disable **Guest access**
+2. Set **Guest login button** to **Hide** -> Save changes
+3. Disable **Email-based self-registration** (click the eye icon)
 
 ### Enable self-enrolment
 
