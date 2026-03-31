@@ -161,8 +161,8 @@ Sync can take up to 24 hours. After that, your Moodle courses will appear in Viv
 
 ### Set default language
 
-1. **Site administration** -> **Language** -> **Language packs** -> install your language
-2. **Site administration** -> **Language** -> **Language settings** -> set **Default language**
+1. **Site administration** -> **Language** -> **Language packs** -> install **Nederlands - Werkplek (nl_wp)**
+2. **Site administration** -> **Language** -> **Language settings** -> set **Default language** to **Nederlands - Werkplek**
 
 ### Set default timezone
 
