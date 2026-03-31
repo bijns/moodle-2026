@@ -207,6 +207,12 @@ Per course:
    - **Enable messaging system**
 3. Save changes
 
+### Disable Dashboard
+
+1. **Site administration** -> **Appearance** -> **Navigation**
+2. Uncheck **Enable Dashboard**
+3. Save changes
+
 ### Disable learning plans
 
 1. **Site administration** -> **Advanced features**
