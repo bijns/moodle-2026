@@ -54,16 +54,11 @@ sudo openssl x509 -in /moodle/certs/nginx.crt -noout -subject -dates
 sudo sed -i "s|\$CFG->wwwroot.*|\$CFG->wwwroot = 'https://lms.yourdomain.com';|" /moodle/html/moodle/config.php
 ```
 
-Ensure `sslproxy` is set correctly (must be a boolean, not a string):
+Ensure `sslproxy` is set correctly (must be boolean `true`, not the string `'true'`):
 
 ```bash
-grep sslproxy /moodle/html/moodle/config.php
-```
-
-If missing or incorrect, add/fix it:
-
-```bash
-sudo sed -i "/wwwroot/a \$CFG->sslproxy = true;" /moodle/html/moodle/config.php
+sudo sed -i "s/\$CFG->sslproxy.*/\$CFG->sslproxy = true;/" /moodle/html/moodle/config.php
+grep sslproxy /moodle/html/moodle/config.php || sudo sed -i "/wwwroot/a \$CFG->sslproxy = true;" /moodle/html/moodle/config.php
 ```
 
 ### Apply changes to VMSS instances
