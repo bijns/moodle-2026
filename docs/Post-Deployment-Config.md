@@ -48,21 +48,6 @@ Verify the certificate:
 sudo openssl x509 -in /moodle/certs/nginx.crt -noout -subject -dates
 ```
 
-### Update Moodle configuration
-
-Skip this step if you set the `siteURL` parameter to your custom domain during deployment.
-
-```bash
-sudo sed -i "s|\$CFG->wwwroot.*|\$CFG->wwwroot = 'https://lms.yourdomain.com';|" /moodle/html/moodle/config.php
-```
-
-Ensure `sslproxy` is set correctly (must be boolean `true`, not the string `'true'`):
-
-```bash
-sudo sed -i "s/\$CFG->sslproxy.*/\$CFG->sslproxy = true;/" /moodle/html/moodle/config.php
-grep sslproxy /moodle/html/moodle/config.php || sudo sed -i "/wwwroot/a \$CFG->sslproxy = true;" /moodle/html/moodle/config.php
-```
-
 ### Apply changes to VMSS instances
 
 Reimage the VMSS instances to pick up the new certificate:
