@@ -66,18 +66,6 @@ Reimage the VMSS instances to pick up the new certificate:
 3. Select all instances -> click **Reimage**
 4. Wait until all instances show **Running** status
 
-### Fix nginx server name on VMSS (if siteURL was not set at deploy time)
-
-If you did not set the `siteURL` parameter during deployment, the VMSS nginx config will redirect to the load balancer hostname instead of your custom domain. To fix this, use the Azure portal VMSS **Run command** on each instance:
-
-```bash
-sed -i 's/lb-<prefix>.<region>.cloudapp.azure.com/lms.yourdomain.com/g' /etc/nginx/sites-enabled/*.conf
-mv /etc/nginx/sites-enabled/lb-*.conf /etc/nginx/sites-enabled/lms.yourdomain.com.conf 2>/dev/null
-nginx -t && systemctl reload nginx
-```
-
-To avoid this issue, set the `siteURL` parameter to your custom domain when deploying.
-
 ## 2. Microsoft 365 SSO (OpenID Connect)
 
 ### Prerequisites
