@@ -375,6 +375,13 @@ server {
         real_ip_header      X-Forwarded-For;
         real_ip_recursive   on;
 EOF
+    cat <<EOF >> /etc/nginx/sites-enabled/${siteFQDN}.conf
+        # Serve ACME challenge files for Let's Encrypt certificate renewal
+        location ^~ /.well-known/acme-challenge/ {
+            root ${htmlRootDir};
+            try_files \$uri =404;
+        }
+EOF
     if [ "$httpsTermination" != "None" ]; then
       cat <<EOF >> /etc/nginx/sites-enabled/${siteFQDN}.conf
         # Redirect to https
