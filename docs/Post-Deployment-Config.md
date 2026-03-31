@@ -9,6 +9,17 @@ After a successful deployment, follow these steps to configure your Moodle site 
 - A custom domain name with DNS access
 - (Optional) Microsoft 365 admin access for SSO and Viva Learning
 
+## 0. First Login
+
+The default admin credentials are:
+
+- **Username:** `admin`
+- **Password:** Retrieve from the controller VM:
+
+```bash
+sudo sed -n '10p' /tmp/vars.txt
+```
+
 ## 1. Custom Domain and SSL Certificate
 
 ### Point your domain to the load balancer
