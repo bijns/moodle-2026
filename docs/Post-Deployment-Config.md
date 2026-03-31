@@ -220,7 +220,8 @@ Per course:
 1. **Site administration** -> **Users** -> **Permissions** -> **Define roles**
 2. Click **Student** -> **Edit**
 3. Search for `moodle/course:viewparticipants`
-4. Set to **Not set** or **Prevent**
+4. Uncheck **Allow**
+5. Save changes
 
 ### Assign admin roles
 
