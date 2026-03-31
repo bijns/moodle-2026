@@ -29,7 +29,13 @@ SSH into the controller VM and install certbot:
 sudo apt-get update && sudo apt-get install -y certbot
 ```
 
-Use DNS validation (recommended, as HTTP validation does not work through the load balancer):
+Use HTTP validation (the deployment templates configure nginx to serve ACME challenge files before the HTTPS redirect):
+
+```bash
+sudo certbot certonly --webroot -w /moodle/html/moodle -d lms.yourdomain.com
+```
+
+If HTTP validation fails (e.g. on older deployments), use DNS validation as a fallback:
 
 ```bash
 sudo certbot certonly --manual --preferred-challenges dns -d lms.yourdomain.com
