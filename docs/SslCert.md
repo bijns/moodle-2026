@@ -63,10 +63,106 @@ if you didn't specify `chain.pem`. Then you can copy these outputs to the templa
 and Azure Resource Manager will install the certificate and the private key on the deployed VMs and the deployed
 HTTPS server will use this certificate and private key.
 
-## Certificate rotation
+## Let's Encrypt (recommended)
 
-Another important benefit of using Azure Key Vault is to handle certificate expiration/rotation automatically.
-Unfortunately, the current implementation doesn't support the auto-rotation. So when it becomes near your SSL
-certificate's expiry, you'll need to manually update the deployed certificate and private key files
-(it's in `/moodle/certs/nginx.{crt,key}` on the controller VM) and restart all the web frontend VM instances.
-We'll improve our implementation to support auto-rotation in the future.
+The simplest way to get a valid SSL certificate is to use [Let's Encrypt](https://letsencrypt.org/),
+which provides free, auto-renewable certificates.
+
+### Prerequisites
+
+- Your custom domain must be set via the `siteURL` deployment parameter
+- A DNS CNAME record pointing your domain to the load balancer DNS (e.g. `lms.yourdomain.com CNAME lb-<prefix>.<region>.cloudapp.azure.com`)
+
+### First-time setup
+
+SSH into the controller VM and install certbot:
+
+```bash
+sudo apt-get update && sudo apt-get install -y certbot
+```
+
+#### Option A: HTTP validation (requires ACME challenge support in nginx)
+
+The deployment templates include an nginx location block that serves ACME challenge
+files from the shared `/moodle/html/moodle/.well-known/acme-challenge/` directory
+before the HTTPS redirect. This allows HTTP-01 validation to work through the load balancer.
+
+```bash
+sudo certbot certonly --webroot -w /moodle/html/moodle -d lms.yourdomain.com
+```
+
+#### Option B: DNS validation (works with any setup)
+
+If HTTP validation is not available (e.g. on older deployments without the ACME
+challenge nginx location block), use DNS validation instead:
+
+```bash
+sudo certbot certonly --manual --preferred-challenges dns -d lms.yourdomain.com
+```
+
+Certbot will ask you to create a TXT record:
+
+```
+_acme-challenge.lms.yourdomain.com  TXT  <challenge-value>
+```
+
+Add the record at your DNS provider and verify it resolves before continuing:
+
+```bash
+nslookup -type=TXT _acme-challenge.lms.yourdomain.com
+```
+
+### Install the certificate
+
+After certbot issues the certificate, copy it to the shared Moodle certs directory:
+
+```bash
+sudo cp /etc/letsencrypt/live/lms.yourdomain.com/fullchain.pem /moodle/certs/nginx.crt
+sudo cp /etc/letsencrypt/live/lms.yourdomain.com/privkey.pem /moodle/certs/nginx.key
+```
+
+Verify the certificate:
+
+```bash
+openssl x509 -in /moodle/certs/nginx.crt -noout -subject -dates
+```
+
+Then reimage the VMSS instances to pick up the new certificate:
+
+1. Azure portal -> your resource group -> Virtual Machine Scale Set
+2. Click **Instances**
+3. Select all instances -> click **Reimage**
+4. Wait until all instances show **Running** status
+
+### Automatic renewal
+
+Set up a cron job on the controller VM to renew the certificate automatically:
+
+```bash
+sudo crontab -e
+```
+
+Add the following line (renews weekly, copies cert if renewed):
+
+```
+0 3 * * 1 certbot renew --webroot -w /moodle/html/moodle --deploy-hook "cp /etc/letsencrypt/live/lms.yourdomain.com/fullchain.pem /moodle/certs/nginx.crt && cp /etc/letsencrypt/live/lms.yourdomain.com/privkey.pem /moodle/certs/nginx.key"
+```
+
+The `--deploy-hook` only runs if the certificate was actually renewed. Let's Encrypt
+certificates are valid for 90 days and certbot will renew them when they have less
+than 30 days remaining.
+
+**Note:** After renewal, VMSS instances will pick up the new certificate files
+from the shared `/moodle/certs/` directory on their next reboot or reimage.
+For immediate effect, reimage the VMSS instances after renewal.
+
+## Certificate rotation (Azure Key Vault)
+
+If you are using Azure Key Vault instead of Let's Encrypt, certificate rotation
+must be done manually. When your SSL certificate is near expiry, update the
+certificate and private key files on the controller VM:
+
+  - `/moodle/certs/nginx.key`: Your certificate's private key
+  - `/moodle/certs/nginx.crt`: Your combined signed certificate and trust chain certificate(s)
+
+Then reimage the VMSS instances to apply the new certificate.
