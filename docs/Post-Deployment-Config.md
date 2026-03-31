@@ -45,7 +45,7 @@ sudo cp /etc/letsencrypt/live/lms.yourdomain.com/privkey.pem /moodle/certs/nginx
 Verify the certificate:
 
 ```bash
-openssl x509 -in /moodle/certs/nginx.crt -noout -subject -dates
+sudo openssl x509 -in /moodle/certs/nginx.crt -noout -subject -dates
 ```
 
 ### Update Moodle configuration
