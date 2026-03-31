@@ -68,10 +68,6 @@ Reimage the VMSS instances to pick up the new certificate:
 
 ## 2. Microsoft 365 SSO (OpenID Connect)
 
-### Prerequisites
-
-- The `installO365pluginsSwitch` parameter must be set to `true` during deployment (this is the default in the minimal template). If it was not, see the manual plugin installation section below.
-
 ### Register an app in Microsoft Entra ID
 
 1. Go to [Azure Portal -> Microsoft Entra ID -> App registrations](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps)
@@ -103,21 +99,6 @@ Reimage the VMSS instances to pick up the new certificate:
 3. Optionally drag it to the top to make it the default login method
 
 Users will now see a Microsoft 365 login button on the Moodle login page.
-
-### Manual O365 plugin installation (if not installed during deployment)
-
-SSH into the controller VM:
-
-```bash
-sudo -s
-cd /moodle/html/moodle
-git clone https://github.com/Microsoft/moodle-auth_oidc.git auth/oidc
-git clone https://github.com/Microsoft/moodle-local_o365.git local/o365
-git clone https://github.com/Microsoft/moodle-repository_office365.git repository/office365
-chown -R www-data:www-data auth/oidc local/o365 repository/office365
-```
-
-Then go to **Site administration** -> **Notifications** in your browser to trigger the plugin installation.
 
 ## 3. Microsoft Viva Learning Integration
 
