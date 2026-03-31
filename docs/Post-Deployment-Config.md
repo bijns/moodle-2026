@@ -96,9 +96,8 @@ sudo sed -n '10p' /tmp/vars.txt
 ### Configure the OIDC plugin in Moodle
 
 1. **Site administration** -> **Plugins** -> **Authentication** -> **OpenID Connect**
-2. Set:
-   - **Identity Provider:** Microsoft Entra ID
-   - **Client ID:** (from the app registration)
+2. Under **Basic settings**, set:
+   - **Application ID:** (Client ID from the app registration)
    - **Client Secret:** (from the app registration)
    - **Tenant ID:** (from the app registration)
 3. Save
