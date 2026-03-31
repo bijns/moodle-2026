@@ -48,6 +48,15 @@ Verify the certificate:
 sudo openssl x509 -in /moodle/certs/nginx.crt -noout -subject -dates
 ```
 
+### Fix sslproxy setting
+
+Ensure `sslproxy` is set to boolean `true`, not the string `'true'`:
+
+```bash
+sudo sed -i "s/\$CFG->sslproxy.*/\$CFG->sslproxy = true;/" /moodle/html/moodle/config.php
+grep sslproxy /moodle/html/moodle/config.php || sudo sed -i "/wwwroot/a \$CFG->sslproxy = true;" /moodle/html/moodle/config.php
+```
+
 ### Apply changes to VMSS instances
 
 Reimage the VMSS instances to pick up the new certificate:
