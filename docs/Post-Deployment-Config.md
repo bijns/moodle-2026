@@ -99,8 +99,10 @@ sudo sed -n '10p' /tmp/vars.txt
 2. Under **Basic settings**, set:
    - **Application ID:** (Client ID from the app registration)
    - **Client Secret:** (from the app registration)
-   - **Tenant ID:** (from the app registration)
-3. Save
+3. Save changes
+4. On the next page (step 2/2), set:
+   - **Microsoft Entra tenant:** (Tenant ID from the app registration)
+5. Save changes
 
 ### Enable the auth plugin
 
