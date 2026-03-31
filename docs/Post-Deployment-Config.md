@@ -188,10 +188,12 @@ Per course:
 2. **Enrolment methods** (gear icon)
 3. Enable **Self enrolment (Student)** (click the eye icon)
 
-### Disable mobile app access
+### Configure mobile app
 
-1. **Site administration** -> **Mobile app** -> **Mobile settings**
-2. Set **Enable web services for mobile devices** to **No**
+1. **Site administration** -> **Mobile app** -> **Mobile authentication**
+2. Set **Type of login** to **Via an embedded browser (for SSO plugins)**
+3. Set **QR code access** to **QR code with site URL**
+4. Save changes
 
 ### Disable unused features
 
