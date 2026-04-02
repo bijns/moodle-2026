@@ -23,7 +23,7 @@
             "type": "string"
         },
         "siteURL": {
-            "defaultValue": "lms.e-office.com",
+            "defaultValue": "moodle.e-office.com",
             "metadata": {
                 "description": "Custom domain name for your Moodle site (e.g. lms.e-office.com)"
             },
