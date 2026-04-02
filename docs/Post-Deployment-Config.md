@@ -120,42 +120,74 @@ Users will now see a Microsoft 365 login button on the Moodle login page.
 
 ## 3. Microsoft Viva Learning Integration
 
-### Enable Moodle Web Services
+Moodle is not a built-in Viva Learning provider. Register it as a custom learning provider via the Microsoft Graph API.
 
-1. **Site administration** -> **Server** -> **Web services** -> **Overview**
-2. **Enable web services** -> toggle On
-3. **Enable protocols** -> enable **REST protocol**
+### Prerequisites
 
-### Create a Web Service
+- Your user must have the **Knowledge Administrator** role in M365
+- **Microsoft Viva Learning** license must be active
 
-1. **Site administration** -> **Server** -> **Web services** -> **External services**
-2. Click **Add**
-3. Name: `Viva Learning`, check **Enabled**, click **Add service**
-4. Click **Add functions** and add:
-   - `core_course_get_courses`
-   - `core_course_get_categories`
-   - `core_course_get_contents`
-   - `core_enrol_get_enrolled_users`
+### Add API permissions
 
-### Create a service token
+1. **Azure Portal** -> **Microsoft Entra ID** -> **App registrations** -> your Moodle app
+2. **API permissions** -> **Add a permission** -> **Microsoft Graph** -> **Delegated permissions**
+3. Add:
+   - `LearningProvider.ReadWrite`
+   - `LearningContent.ReadWrite.All`
+4. Click **Grant admin consent**
 
-1. **Site administration** -> **Server** -> **Web services** -> **Manage tokens**
-2. Click **Create token**
-3. Select **Admin** user, select the **Viva Learning** service
-4. Click **Save changes** and copy the token
+### Register Moodle as a learning provider
 
-### Configure in Microsoft 365 Admin Center
+1. Go to [Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer)
+2. Sign in with your Knowledge Administrator account
+3. Click **Modify permissions** -> consent to `LearningProvider.ReadWrite` and `LearningContent.ReadWrite.All`
+4. Run a **POST** request to:
 
-1. Go to [admin.microsoft.com](https://admin.microsoft.com)
-2. **Settings** -> **Org settings** -> **Viva Learning**
-3. Click **Add provider** -> select **Moodle**
-4. Enter:
-   - **Display name:** Moodle LMS
-   - **Moodle host URL:** `https://lms.yourdomain.com`
-   - **Web service token:** (paste the token)
-5. Click **Save**
+```
+https://graph.microsoft.com/v1.0/employeeExperience/learningProviders
+```
 
-Sync can take up to 24 hours. After that, your Moodle courses will appear in Viva Learning in Teams. Make sure courses are set to visible and have self-enrolment enabled.
+Body:
+
+```json
+{
+    "displayName": "Moodle LMS",
+    "loginWebUrl": "https://moodle.e-office.com",
+    "longLogoWebUrlForDarkTheme": "https://moodle.e-office.com/pix/moodlelogo.png",
+    "longLogoWebUrlForLightTheme": "https://moodle.e-office.com/pix/moodlelogo.png",
+    "squareLogoWebUrlForDarkTheme": "https://moodle.e-office.com/pix/moodlelogo.png",
+    "squareLogoWebUrlForLightTheme": "https://moodle.e-office.com/pix/moodlelogo.png"
+}
+```
+
+5. Save the `id` from the response
+
+### Push a course to Viva Learning
+
+Run a **PATCH** request to:
+
+```
+https://graph.microsoft.com/v1.0/employeeExperience/learningProviders/PROVIDER_ID/learningContents(externalId='course-ai-geletterdheid')
+```
+
+Body:
+
+```json
+{
+    "title": "AI Geletterdheid",
+    "description": "E-learning over AI geletterdheid",
+    "contentWebUrl": "https://moodle.e-office.com/course/view.php?id=2",
+    "externalId": "course-ai-geletterdheid",
+    "format": "scorm",
+    "languageTag": "nl-nl",
+    "locale": "nl-nl",
+    "isActive": true,
+    "isPremium": false,
+    "isSearchable": true
+}
+```
+
+The course should appear in Viva Learning within 24 hours.
 
 ## 4. Recommended Moodle Settings
 
