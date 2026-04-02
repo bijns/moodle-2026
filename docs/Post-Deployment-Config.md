@@ -389,6 +389,21 @@ When a user completes a SCORM activity, Moodle will POST the following JSON to y
 }
 ```
 
+### Create a REST API token for Power Automate
+
+1. **Site administration** -> **Server** -> **Web services** -> **External services**
+2. Click **Add** -> Name: `Power Automate`, check **Enabled** -> click **Add service**
+3. Click **Add functions** and add:
+   - `core_enrol_get_enrolled_users`
+   - `core_completion_get_activities_completion_status`
+   - `mod_scorm_get_scorm_attempt_count`
+   - `mod_scorm_get_scorm_user_data`
+   - `core_user_get_users_by_field`
+4. **Site administration** -> **Server** -> **Web services** -> **Manage tokens**
+5. Click **Create token**
+6. Select **Admin** user, select the **Power Automate** service
+7. Click **Save changes** and copy the token
+
 ### Useful REST API endpoints
 
 Get enrolled users (to find user IDs):
