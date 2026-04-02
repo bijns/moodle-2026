@@ -358,7 +358,15 @@ sudo chown -R www-data:www-data /moodle/html/moodle/local/webhooknotify
 
 ### Install the plugin
 
-Go to **Site administration** → **Notifications** and click **Upgrade Moodle database now**.
+If you get a cache error (`alternative_component_cache`), fix it first:
+
+```bash
+sudo sed -i '/alternative_component_cache/d' /moodle/html/moodle/config.php
+sudo chown -R www-data:www-data /tmp/localcachedir
+sudo -u www-data php /moodle/html/moodle/admin/cli/purge_caches.php
+```
+
+Then go to **Site administration** → **Notifications** and click **Upgrade Moodle database now**.
 
 ### Configure the webhook URL
 
