@@ -394,6 +394,7 @@ When a user completes a SCORM activity, Moodle will POST the following JSON to y
 1. **Site administration** -> **Server** -> **Web services** -> **External services**
 2. Click **Add** -> Name: `Power Automate`, check **Enabled** -> click **Add service**
 3. Click **Add functions** and add:
+   - `core_course_get_contents`
    - `core_enrol_get_enrolled_users`
    - `core_completion_get_activities_completion_status`
    - `mod_scorm_get_scorm_attempt_count`
