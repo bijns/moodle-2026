@@ -35,8 +35,8 @@ dns)
   ;;
 status)
   echo "DNS record: $(b "sudo bash -c \". /root/hookfn.sh; load_conf; api records host=moodle type=CNAME | jq -c '.[]|{record,ttl,status}'\"" 2>&1 | cut -c1-160)"
-  echo "blue  maintenance flag: $(b 'ls /moodle/moodledata/climaintenance.html 2>&1 | cut -c1-50')  cron active: $(b 'grep -v "^#" /etc/cron.d/moodle-cron | grep -c admin/cli/cron.php')"
-  echo "green maintenance flag: $(g 'ls /moodle/moodledata/climaintenance.html 2>&1 | cut -c1-50')  cron active: $(g 'grep -v "^#" /etc/cron.d/moodle-cron | grep -c admin/cli/cron.php')"
+  echo "blue  maintenance flag: $(b 'sudo ls /moodle/moodledata/climaintenance.html 2>&1 | cut -c1-50')  cron active: $(b 'grep -v "^#" /etc/cron.d/moodle-cron | grep -c admin/cli/cron.php')"
+  echo "green maintenance flag: $(g 'sudo ls /moodle/moodledata/climaintenance.html 2>&1 | cut -c1-50')  cron active: $(g 'grep -v "^#" /etc/cron.d/moodle-cron | grep -c admin/cli/cron.php')"
   ;;
 *) echo "usage: $0 green-down|blue-up|dns|status   (quick rollback order: green-down, blue-up, dns)" ;;
 esac
