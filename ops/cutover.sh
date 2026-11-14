@@ -17,8 +17,8 @@ EXCL="--exclude=moodledata/cache --exclude=moodledata/localcache --exclude=moodl
 case "${1:-}" in
 preflight)
   echo "== preflight $(ts)"
-  echo "blue : $(b 'hostname; grep -E "^.release" /moodle/html/moodle/version.php | cut -c1-50; ls /moodle/moodledata/climaintenance.html 2>&1 | cut -c1-40' | tr '\n' ' ')"
-  echo "green: $(g 'hostname; grep -E "^.release" /moodle/html/moodle/version.php | cut -c1-50; ls /moodle/moodledata/climaintenance.html 2>&1 | cut -c1-40' | tr '\n' ' ')"
+  echo "blue : $(b 'hostname; grep -E "^.release" /moodle/html/moodle/version.php | cut -c1-50; sudo ls /moodle/moodledata/climaintenance.html 2>&1 | cut -c1-40' | tr '\n' ' ')"
+  echo "green: $(g 'hostname; grep -E "^.release" /moodle/html/moodle/version.php | cut -c1-50; sudo ls /moodle/moodledata/climaintenance.html 2>&1 | cut -c1-40' | tr '\n' ' ')"
   echo "green cron lines active: $(g 'grep -v "^#" /etc/cron.d/moodle-cron | grep -c admin/cli/cron.php')  (expect 0 until golive)"
   echo "green noemailever: $(g 'grep -c noemailever /moodle/html/moodle/config.php')  (expect 1 until sync)"
   echo "green certbot timer: $(g 'systemctl is-enabled certbot.timer 2>&1')  blue certbot timer: $(b 'systemctl is-enabled certbot.timer 2>&1')"
