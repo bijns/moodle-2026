@@ -802,5 +802,30 @@ EOF
         service apache2 restart
    fi
 
+  # Reload nginx when the controller publishes a renewed certificate to /moodle/certs
+  # (certbot deploy hook on the controller copies it there). Checks every minute.
+  if [ "$webServerType" = "nginx" ]; then
+    cat > /usr/local/bin/nginx-cert-watch.sh <<'CERTWATCH'
+#!/bin/bash
+# Reloads nginx on this web server when /moodle/certs/nginx.crt changed since the last load.
+STAMP=/run/nginx-cert.sha256
+CRT=/moodle/certs/nginx.crt
+[ -r "$CRT" ] || exit 0
+NEW=$(sha256sum "$CRT" | cut -d' ' -f1)
+if [ ! -s "$STAMP" ]; then echo "$NEW" > "$STAMP"; exit 0; fi
+OLD=$(cat "$STAMP")
+[ "$OLD" = "$NEW" ] && exit 0
+if nginx -t > /dev/null 2>&1; then
+  systemctl reload nginx && echo "$NEW" > "$STAMP" && logger -t nginx-cert-watch "reloaded nginx: certificate changed"
+else
+  logger -t nginx-cert-watch "nginx -t failed; certificate not reloaded"
+fi
+CERTWATCH
+    chmod 755 /usr/local/bin/nginx-cert-watch.sh
+    echo '* * * * * root timeout 30 /usr/local/bin/nginx-cert-watch.sh' > /etc/cron.d/nginx-cert-watch
+    chmod 644 /etc/cron.d/nginx-cert-watch
+    /usr/local/bin/nginx-cert-watch.sh
+  fi
+
   echo "### Script End $(date)###"
 } 2>&1 | tee /tmp/setup.log
