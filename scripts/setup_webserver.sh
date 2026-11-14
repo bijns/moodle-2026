@@ -802,6 +802,21 @@ EOF
         service apache2 restart
    fi
 
+  # Brute-force protection: POST /login/index.php limited to 10/min per IP (burst 10), then HTTP 429.
+  if [ "$webServerType" = "nginx" ]; then
+    cat > /etc/nginx/conf.d/moodle-login-limit.conf <<'CONF'
+# Login brute-force protection. Only POST /login/index.php gets a key; other requests are exempt.
+map $request_method$request_uri $moodle_login_key {
+    default "";
+    ~^POST/login/index[.]php $binary_remote_addr;
+}
+limit_req_zone $moodle_login_key zone=moodlelogin:10m rate=10r/m;
+limit_req zone=moodlelogin burst=10 nodelay;
+limit_req_status 429;
+CONF
+    nginx -t > /dev/null 2>&1 && systemctl reload nginx
+  fi
+
   # Reload nginx when the controller publishes a renewed certificate to /moodle/certs
   # (certbot deploy hook on the controller copies it there). Checks every minute.
   if [ "$webServerType" = "nginx" ]; then
