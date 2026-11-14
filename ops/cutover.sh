@@ -61,8 +61,8 @@ sync)
   g 'sudo chown www-data:www-data /moodle/moodledata; sudo chmod 770 /moodle/moodledata; for d in cache localcache temp sessions trashdir; do sudo install -d -o www-data -g www-data -m 770 /moodle/moodledata/$d; done; ls /moodle/moodledata/climaintenance.html 2>&1 | cut -c1-60'
   echo "== upgrade green DB (4.5.10 data -> 4.5.16 code) $(ts)"
   g 'cd /moodle/html/moodle && sudo -u www-data php admin/cli/upgrade.php --non-interactive > /tmp/upgrade2.log 2>&1; echo upgrade-exit=$?; tail -n 3 /tmp/upgrade2.log | cut -c1-140; echo errors: $(grep -c -i -E "error|exception|fatal" /tmp/upgrade2.log)'
-  echo "== revert rehearsal settings on green $(ts)"
-  g "sudo sed -i 's/^#DISABLED-REHEARSAL //' /etc/cron.d/moodle-cron; echo green cron active lines: \$(grep -v '^#' /etc/cron.d/moodle-cron | grep -c admin/cli/cron.php); sudo sed -i '/noemailever/d' /moodle/html/moodle/config.php; echo noemailever left: \$(grep -c noemailever /moodle/html/moodle/config.php); php -l /moodle/html/moodle/config.php | cut -c1-60"
+  echo "== re-enable cron on green; mail stays OFF on purpose (noemailever kept, user decision) $(ts)"
+  g "sudo sed -i 's/^#DISABLED-REHEARSAL //' /etc/cron.d/moodle-cron; echo green cron active lines: \$(grep -v '^#' /etc/cron.d/moodle-cron | grep -c admin/cli/cron.php); sudo sed -i 's|// REHEARSAL: remove before cutover|// MAIL DISABLED ON PURPOSE (decision 2026-11-14: Moodle must not send mail)|' /moodle/html/moodle/config.php; echo noemailever lines kept: \$(grep -c noemailever /moodle/html/moodle/config.php); php -l /moodle/html/moodle/config.php | cut -c1-60"
   g 'cd /moodle/html/moodle && sudo -u www-data php admin/cli/purge_caches.php 2>&1 | cut -c1-80; sudo /usr/local/bin/update_last_modified_time.moodle_on_azure.sh; echo stamp: $(cat /moodle/html/moodle/.last_modified_time.moodle_on_azure)'
   echo "== certbot timer: enable on green, disable on blue $(ts)"
   g 'sudo systemctl enable --now certbot.timer 2>&1 | tail -n 1 | cut -c1-80; systemctl is-active certbot.timer'
